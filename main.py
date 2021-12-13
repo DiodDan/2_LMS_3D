@@ -1,3 +1,5 @@
+import objects as objects
+
 from object_3d import *
 from camera import *
 from projection import *
@@ -5,12 +7,14 @@ import pygame as pg
 import random
 
 
-chank = 3
-
+chank = 1
+chank_size = 0
+in_time_chunks = 4
 class SoftwareRender:
     def __init__(self):
         pg.init()
         self.objects = []
+        self.plane = ''
         self.RES = self.WIDTH, self.HEIGHT = 1600, 900
         self.H_WIDTH, self.H_HEIGHT = self.WIDTH // 2, self.HEIGHT // 2
         self.FPS = 60
@@ -20,14 +24,14 @@ class SoftwareRender:
 
 
     def create_objects(self):
-        self.camera = Camera(self, [1850, 450, 0])
+        self.camera = Camera(self, [2875, 600, 0])
         self.projection = Projection(self)
-        for i in range(3):
+        for i in range(in_time_chunks):
             self.objects.append(Object3D(self, *self.create_map(step=i)))
-        self.objects.append(Object3D(self, *self.get_object_from_file("plane v1.obj")))
-        self.objects[-1].rotate_x(np.pi / 2)
-        self.objects[-1].rotate_z(np.pi / 2)
-        self.objects[-1].translate([1850, 450, 300])
+        self.plane = Plane(self, *self.get_object_from_file("plane v1.obj"), color_mode=2)
+        self.plane.rotate_x(np.pi / 2)
+        self.plane.rotate_z(np.pi / 2)
+        self.plane.translate([2863, 450, 350])
 
         """self.object.rotate_y(-math.pi / 4)"""
 
@@ -41,8 +45,10 @@ class SoftwareRender:
                     faces_ = line.split()[1:]
                     faces.append([int(face_.split('/')[0]) - 1 for face_ in faces_])
         return vertex, faces
-    def create_map(self, x=80, y=160, n=25, coef=40, step=0):
+    def create_map(self, x=450, y=250, n=26, coef=40, step=0):
         map = []
+        global chank_size
+        chank_size = (n - 2) * x
         for i in range(n):
             for j in range(n):
                 map.append((i * y, random.random() * coef, j * x + x * (n - 2) * step, 1))
@@ -55,21 +61,25 @@ class SoftwareRender:
 
     def draw(self):
         self.screen.fill(pg.Color('black'))
-        self.objects[-1].translate([0, 0, 1])
+        self.plane.translate([0, 0, 10])
+        if self.plane.real_angle > 0:
+            self.plane.rotate_z(np.pi / 400)
+            self.plane.real_angle -= np.pi / 400
+        if self.plane.real_angle < 0:
+            self.plane.rotate_z(-np.pi / 400)
+            self.plane.real_angle -= -np.pi / 400
         for obj in self.objects:
             obj.draw()
+        self.plane.draw()
     def run(self):
         global chank
         while True:
-            """if self.camera.position[2] >= 1060 * chank:
-                print(1)
+            if self.camera.position[2] >= chank * chank_size:
+                del self.objects[0]
+                self.objects.append(Object3D(self, *self.create_map(step=chank + in_time_chunks - 1)))
+                self.objects[-1].dir = bool(self.objects[-2].dir)
+                self.objects[-1].color = self.objects[-2].color.copy()
                 chank += 1
-                self.object.faces = self.object.faces[842:]
-                self.object.vertexes = self.object.vertexes[901:]
-                vertex1, faces1 = self.create_map(step=chank + 3)
-                self.object.vertex = self.object.vertex + vertex1
-                self.object.faces = faces1 + self.object.faces"""
-
             self.draw()
             self.camera.control()
             [exit() for i in pg.event.get() if i.type == pg.QUIT]
