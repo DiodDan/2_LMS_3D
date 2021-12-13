@@ -10,6 +10,7 @@ chank = 3
 class SoftwareRender:
     def __init__(self):
         pg.init()
+        self.objects = []
         self.RES = self.WIDTH, self.HEIGHT = 1600, 900
         self.H_WIDTH, self.H_HEIGHT = self.WIDTH // 2, self.HEIGHT // 2
         self.FPS = 60
@@ -17,23 +18,20 @@ class SoftwareRender:
         self.clock = pg.time.Clock()
         self.create_objects()
 
+
     def create_objects(self):
-        vertex, faces = self.create_map()
-        vertex1, faces1 = self.create_map(step=1)
-        vertex = vertex + vertex1
-        faces = faces1 + faces
-        vertex1, faces1 = self.create_map(step=2)
-        vertex = vertex + vertex1
-        faces = faces1 + faces
-        vertex1, faces1 = self.create_map(step=3)
-        vertex = vertex + vertex1
-        faces = faces1 + faces
         self.camera = Camera(self, [1850, 450, 0])
         self.projection = Projection(self)
-        self.object = Object3D(self, vertex, faces)
+        for i in range(3):
+            self.objects.append(Object3D(self, *self.create_map(step=i)))
+        self.objects.append(Object3D(self, *self.get_object_from_file("plane v1.obj")))
+        self.objects[-1].rotate_x(np.pi / 2)
+        self.objects[-1].rotate_z(np.pi / 2)
+        self.objects[-1].translate([1850, 450, 300])
+
         """self.object.rotate_y(-math.pi / 4)"""
 
-    """def get_object_from_file(self, filename):
+    def get_object_from_file(self, filename):
         vertex, faces = [], []
         with open(filename) as f:
             for line in f:
@@ -42,7 +40,7 @@ class SoftwareRender:
                 elif line.startswith('f'):
                     faces_ = line.split()[1:]
                     faces.append([int(face_.split('/')[0]) - 1 for face_ in faces_])
-        return Object3D(self, vertex, faces)"""
+        return vertex, faces
     def create_map(self, x=80, y=160, n=25, coef=40, step=0):
         map = []
         for i in range(n):
@@ -52,13 +50,14 @@ class SoftwareRender:
 
         for i in range(1, n - 1):
             for j in range(1, n - 1):
-                faces.append((i + (j - 1) * n + n * n * step, i + (j - 1) * n + 1 + n * n * step, i + j * n + 1 + n * n * step, i + j * n + n * n * step))
-        return (map, faces)
+                faces.append((i + (j - 1) * n, i + (j - 1) * n + 1, i + j * n + 1, i + j * n))
+        return map, faces
 
     def draw(self):
         self.screen.fill(pg.Color('black'))
-        self.object.draw()
-
+        self.objects[-1].translate([0, 0, 1])
+        for obj in self.objects:
+            obj.draw()
     def run(self):
         global chank
         while True:

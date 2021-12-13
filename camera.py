@@ -14,11 +14,11 @@ class Camera:
         self.far_plane = 100
         self.moving_speed = 3
         self.rotation_speed = 0.02
-        self.camera_moovex(0.3)
+        """self.camera_moovex(0.3)"""
 
     def control(self):
         key = pg.key.get_pressed()
-        self.position += np.array([0, 0, 1, 1]).transpose() * self.moving_speed
+        """self.position += np.array([0, 0, 1, 1]).transpose() * self.moving_speed * 3"""
         if key[pg.K_a]:
             self.position -= self.right * self.moving_speed
         if key[pg.K_d]:
