@@ -1,3 +1,4 @@
+import numpy as np
 import pygame as pg
 from matrix_functions import *
 from numba import njit
@@ -26,6 +27,8 @@ class Object3D:
 
         if self.color_mode == 2:
             self.color = [150, 150, 150]
+        if self.color_mode == 3:
+            self.color = [0, 204, 255]
 
     def draw(self):
         self.screen_projection()
@@ -92,7 +95,7 @@ class Object3D:
 class Plane:
     def __init__(self, render, vertexes='', faces='', color_mode=1):
         self.render = render
-        self.start_pos = vertexes[0]
+        self.start_pos = [sum(i) / len(vertexes) for i in np.array(vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
         self.max_angle = np.pi / 7
         self.real_angle = 0
         self.vertexes = np.array([np.array(v) for v in vertexes])
@@ -109,6 +112,8 @@ class Plane:
 
         if self.color_mode == 2:
             self.color = [150, 150, 150]
+        if self.color_mode == 3:
+            self.color = [0, 204, 255]
 
     def draw(self):
         self.screen_projection()
@@ -147,7 +152,7 @@ class Plane:
             if not any_func(polygon, self.render.H_WIDTH, self.render.H_HEIGHT):
                 """if self.color_mode == 2:
                     pg.draw.polygon(self.render.screen, (255, 255, 255), polygon)"""
-                pg.draw.polygon(self.render.screen, self.color, polygon, 1)
+                pg.draw.polygon(self.render.screen, self.color, polygon, 3)
                 if self.label:
                     text = self.font.render(self.label[index], True, pg.Color('white'))
                     self.render.screen.blit(text, polygon[-1])
@@ -164,19 +169,30 @@ class Plane:
         self.vertexes = self.vertexes @ scale(scale_to)
 
     def rotate_x(self, angle):
-        step = (np.array(self.vertexes[0] - self.start_pos)).transpose()
+        point = [sum(i) / len(self.vertexes) for i in
+         np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1,
+                                                                         4).transpose()]
+        step = (np.array(np.array(point) - self.start_pos)).transpose()
         self.vertexes = self.vertexes - step
         self.vertexes = self.vertexes @ rotate_x(angle)
         self.vertexes = self.vertexes + step
 
     def rotate_y(self, angle):
-        step = (np.array(self.vertexes[0] - self.start_pos)).transpose()
+        point = [sum(i) / len(self.vertexes) for i in
+                 np.array(self.vertexes).transpose() * np.array(
+                     [1, 1, 1, 1]).reshape(1,
+                                           4).transpose()]
+        step = (np.array(np.array(point) - self.start_pos)).transpose()
         self.vertexes = self.vertexes - step
         self.vertexes = self.vertexes @ rotate_y(angle)
         self.vertexes = self.vertexes + step
 
     def rotate_z(self, angle):
-        step = (np.array(self.vertexes[0] - self.start_pos)).transpose()
+        point = [sum(i) / len(self.vertexes) for i in
+                 np.array(self.vertexes).transpose() * np.array(
+                     [1, 1, 1, 1]).reshape(1,
+                                           4).transpose()]
+        step = (np.array(np.array(point) - self.start_pos)).transpose()
         self.vertexes = self.vertexes - step
         self.vertexes = self.vertexes @ rotate_z(angle)
         self.vertexes = self.vertexes + step

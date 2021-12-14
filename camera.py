@@ -1,5 +1,6 @@
 import pygame as pg
 from matrix_functions import *
+from settings import flip_speed, moving_speed, rotation_speed, cam_start_angle
 
 class Camera:
     def __init__(self, render, position):
@@ -12,9 +13,9 @@ class Camera:
         self.v_fov = self.h_fov * (render.HEIGHT / render.WIDTH)
         self.near_plane = 0.1
         self.far_plane = 100
-        self.moving_speed = 10
-        self.rotation_speed = 0.02
-        self.camera_moovex(0.3)
+        self.moving_speed = moving_speed
+        self.rotation_speed = rotation_speed
+        self.camera_moovex(cam_start_angle)
 
     def control(self):
         key = pg.key.get_pressed()
@@ -23,15 +24,15 @@ class Camera:
             self.position -= self.right * self.moving_speed
             self.render.plane.translate(-self.right[0:3] * self.moving_speed)
             if self.render.plane.max_angle >= np.abs(self.render.plane.real_angle):
-                self.render.plane.rotate_z(np.pi / 200)
-                self.render.plane.real_angle -= np.pi / 200
+                self.render.plane.rotate_z(np.pi / flip_speed)
+                self.render.plane.real_angle -= np.pi / flip_speed
 
         if key[pg.K_d]:
             self.position += self.right * self.moving_speed
             self.render.plane.translate(self.right[0:3] * self.moving_speed)
             if self.render.plane.max_angle >= np.abs(self.render.plane.real_angle):
-                self.render.plane.rotate_z(-np.pi / 200)
-                self.render.plane.real_angle -= -np.pi / 200
+                self.render.plane.rotate_z(-np.pi / flip_speed)
+                self.render.plane.real_angle -= -np.pi / flip_speed
         if key[pg.K_w]:
             self.position += self.forward * self.moving_speed
         if key[pg.K_s]:
