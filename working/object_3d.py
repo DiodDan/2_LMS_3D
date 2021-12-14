@@ -1,7 +1,7 @@
-import numpy as np
 import pygame as pg
-from matrix_functions import *
 from numba import njit
+
+from working.matrix_functions import *
 
 
 @njit(fastmath=True)
@@ -32,11 +32,6 @@ class Object3D:
 
     def draw(self):
         self.screen_projection()
-        """self.movement()"""
-
-    """def movement(self):
-        if self.movement_flag:
-            self.rotate_y(-(pg.time.get_ticks() % 0.005))"""
 
     def screen_projection(self):
         if self.color_mode == 1:
@@ -92,10 +87,13 @@ class Object3D:
     def rotate_z(self, angle):
         self.vertexes = self.vertexes @ rotate_z(angle)
 
-class Plane:
+
+class Plane(Object3D):
     def __init__(self, render, vertexes='', faces='', color_mode=1):
+        super().__init__(render, vertexes, faces, color_mode)
         self.render = render
-        self.start_pos = [sum(i) / len(vertexes) for i in np.array(vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
+        self.start_pos = [sum(i) / len(vertexes) for i in
+                          np.array(vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
         self.max_angle = np.pi / 7
         self.real_angle = 0
         self.vertexes = np.array([np.array(v) for v in vertexes])
@@ -117,86 +115,31 @@ class Plane:
 
     def draw(self):
         self.screen_projection()
-        """self.movement()"""
 
-    """def movement(self):
-        if self.movement_flag:
-            self.rotate_y(-(pg.time.get_ticks() % 0.005))"""
-
-    def screen_projection(self):
-        if self.color_mode == 1:
-            if self.dir and self.color[2] != 255:
-                self.color[2] += 1
-            elif self.color[2] == 255 and self.color[0] == 0:
-                self.dir = False
-            elif self.dir:
-                self.color[0] -= 1
-
-            if not self.dir and self.color[0] != 255:
-                self.color[0] += 1
-            elif self.color[0] == 255 and self.color[2] == 0:
-                self.dir = True
-            elif not self.dir:
-                self.color[2] -= 1
-
-        vertexes = self.vertexes @ self.render.camera.camera_matrix()
-        vertexes = vertexes @ self.render.projection.projection_matrix
-        vertexes /= vertexes[:, -1].reshape(-1, 1)
-        vertexes[(vertexes > 2) | (vertexes < -2)] = 0
-        vertexes = vertexes @ self.render.projection.to_screen_matrix
-        vertexes = vertexes[:, :2]
-
-        for index, color_face in enumerate(self.color_faces):
-            color, face = color_face
-            polygon = vertexes[face]
-            if not any_func(polygon, self.render.H_WIDTH, self.render.H_HEIGHT):
-                """if self.color_mode == 2:
-                    pg.draw.polygon(self.render.screen, (255, 255, 255), polygon)"""
-                pg.draw.polygon(self.render.screen, self.color, polygon, 3)
-                if self.label:
-                    text = self.font.render(self.label[index], True, pg.Color('white'))
-                    self.render.screen.blit(text, polygon[-1])
-
-        if self.draw_vertexes:
-            for vertex in vertexes:
-                if not any_func(vertex, self.render.H_WIDTH, self.render.H_HEIGHT):
-                    pg.draw.circle(self.render.screen, pg.Color('white'), vertex, 2)
-
-    def translate(self, pos):
-        self.vertexes = self.vertexes @ translate(pos)
-
-    def scale(self, scale_to):
-        self.vertexes = self.vertexes @ scale(scale_to)
+    def matrix_rotate(self):
+        point = [sum(i) / len(self.vertexes) for i in
+                 np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1,
+                                                                                      4).transpose()]
+        step = (np.array(np.array(point) - self.start_pos)).transpose()
+        return step
 
     def rotate_x(self, angle):
-        point = [sum(i) / len(self.vertexes) for i in
-         np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1,
-                                                                         4).transpose()]
-        step = (np.array(np.array(point) - self.start_pos)).transpose()
+        step = self.matrix_rotate()
         self.vertexes = self.vertexes - step
         self.vertexes = self.vertexes @ rotate_x(angle)
         self.vertexes = self.vertexes + step
 
     def rotate_y(self, angle):
-        point = [sum(i) / len(self.vertexes) for i in
-                 np.array(self.vertexes).transpose() * np.array(
-                     [1, 1, 1, 1]).reshape(1,
-                                           4).transpose()]
-        step = (np.array(np.array(point) - self.start_pos)).transpose()
+        step = self.matrix_rotate()
         self.vertexes = self.vertexes - step
         self.vertexes = self.vertexes @ rotate_y(angle)
         self.vertexes = self.vertexes + step
 
     def rotate_z(self, angle):
-        point = [sum(i) / len(self.vertexes) for i in
-                 np.array(self.vertexes).transpose() * np.array(
-                     [1, 1, 1, 1]).reshape(1,
-                                           4).transpose()]
-        step = (np.array(np.array(point) - self.start_pos)).transpose()
+        step = self.matrix_rotate()
         self.vertexes = self.vertexes - step
         self.vertexes = self.vertexes @ rotate_z(angle)
         self.vertexes = self.vertexes + step
-
 
 
 class Axes(Object3D):
@@ -208,3 +151,7 @@ class Axes(Object3D):
         self.color_faces = [(color, face) for color, face in zip(self.colors, self.faces)]
         self.draw_vertexes = False
         self.label = 'XYZ'
+
+
+class Coin(Plane):
+    pass

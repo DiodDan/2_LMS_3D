@@ -1,6 +1,8 @@
 import pygame as pg
-from matrix_functions import *
-from settings import flip_speed, moving_speed, rotation_speed, cam_start_angle
+
+from working.matrix_functions import *
+from settings import flip_speed, moving_speed, rotation_speed, cam_start_angle, follow_moving_speed
+
 
 class Camera:
     def __init__(self, render, position):
@@ -15,11 +17,11 @@ class Camera:
         self.far_plane = 100
         self.moving_speed = moving_speed
         self.rotation_speed = rotation_speed
-        self.camera_moovex(cam_start_angle)
+        self.camera_move_on_x(cam_start_angle)
 
     def control(self):
         key = pg.key.get_pressed()
-        self.position += np.array([0, 0, 1, 1]).transpose() * self.moving_speed
+        self.position += np.array([0, 0, 1, 1]).transpose() * follow_moving_speed
         if key[pg.K_a]:
             self.position -= self.right * self.moving_speed
             self.render.plane.translate(-self.right[0:3] * self.moving_speed)
@@ -43,32 +45,32 @@ class Camera:
             self.position -= self.up * self.moving_speed
 
         if key[pg.K_LEFT]:
-            self.camera_moovey(-self.rotation_speed)
+            self.camera_move_on_y(-self.rotation_speed)
         if key[pg.K_RIGHT]:
-            self.camera_moovey(self.rotation_speed)
+            self.camera_move_on_y(self.rotation_speed)
         if key[pg.K_UP]:
-            self.camera_moovex(-self.rotation_speed)
+            self.camera_move_on_x(-self.rotation_speed)
         if key[pg.K_DOWN]:
-            self.camera_moovex(self.rotation_speed)
+            self.camera_move_on_x(self.rotation_speed)
 
         if key[pg.K_m]:
-            self.camera_moovez(-self.rotation_speed)
+            self.camera_move_on_z(-self.rotation_speed)
         if key[pg.K_n]:
-            self.camera_moovez(self.rotation_speed)
+            self.camera_move_on_z(self.rotation_speed)
 
-    def camera_moovey(self, angle):
+    def camera_move_on_y(self, angle):
         rotate = rotate_y(angle)
         self.forward = self.forward @ rotate
         self.right = self.right @ rotate
         self.up = self.up @ rotate
 
-    def camera_moovex(self, angle):
+    def camera_move_on_x(self, angle):
         rotate = rotate_x(angle)
         self.forward = self.forward @ rotate
         self.right = self.right @ rotate
         self.up = self.up @ rotate
 
-    def camera_moovez(self, angle):
+    def camera_move_on_z(self, angle):
         rotate = rotate_z(angle)
         self.forward = self.forward @ rotate
         self.right = self.right @ rotate

@@ -1,19 +1,17 @@
 # Map generation
-chank_size = 0 # is automatically generated
-
-chank = 1
+chunk = 1
 in_time_chunks = 4
 
-# Chank generation
+# Chunk generation
 
-chank_size_x = 450
-chank_size_y = 250
-chank_rect_n = 26
+chunk_size_x = 450
+chunk_size_y = 250
+chunk_rect_n = 26
 z_scale = 80
-
+chunk_size = (chunk_rect_n - 1) * chunk_size_x  # is automatically generated
 # Plane
 flip_speed = 200
-flip_return_coef = 2
+flip_return_ratio = 2
 plane_start_position = [2875, 450, 350]
 plane_moving_speed = 10
 
@@ -23,11 +21,12 @@ coin_rotation_speed = 400
 # Camera
 camera_start_position = [2875, 600, 0]
 moving_speed = 10
+follow_moving_speed = plane_moving_speed
 rotation_speed = 0.02
 cam_start_angle = 0.3
 
 # Main App
 
 FPS = 60
-hight = 1600
+height = 1600
 width = 900
