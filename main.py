@@ -25,7 +25,7 @@ class SoftwareRender:
         self.fps_font = pg.font.SysFont('arial', 40)
 
     def create_objects(self):
-        self.plane = Plane(self, *self.get_object_from_file("objects/Plane.obj"),
+        self.plane = Plane(self, *self.get_object_from_file('../objects/Plane.obj'),
                            color_mode=2)
         for i in range(in_time_chunks):
             self.objects.append(Object3D(self, *self.create_map(x=chunk_size_x,
@@ -35,7 +35,7 @@ class SoftwareRender:
                                                                 step=i)))
 
         self.coins.append(
-            Coin(self, *self.get_object_from_file("objects/Coin.obj"), color_mode=3))
+            Coin(self, *self.get_object_from_file('../objects/Coin.obj'), color_mode=3))
         self.coins[-1].translate([2875, 450, 2000])
         self.plane.rotate_y(np.pi / 2)
         self.plane.translate(plane_start_position)
@@ -109,6 +109,6 @@ class SoftwareRender:
             self.clock.tick(self.FPS)
 
 
-if __name__ == '__main__':
+def start_me_up():
     app = SoftwareRender()
     app.run(chunk, chunk_size)
