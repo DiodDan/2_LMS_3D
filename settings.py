@@ -1,6 +1,7 @@
 # Map generation
 chunk = 1
 in_time_chunks = 4
+draw_vertexes = False
 
 # Chunk generation
 
@@ -27,6 +28,6 @@ cam_start_angle = 0.3
 
 # Main App
 
-FPS = 60
+FPS = 90
 height = 1600
 width = 900

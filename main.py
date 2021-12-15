@@ -10,6 +10,7 @@ class SoftwareRender:
     def __init__(self):
         self.plane = None
         pg.init()
+
         self.objects = []
         self.coins = []
         self.RES = self.WIDTH, self.HEIGHT = height, width
@@ -20,6 +21,8 @@ class SoftwareRender:
         self.create_objects()
         self.camera = Camera(self, camera_start_position)
         self.projection = Projection(self)
+        #pg.font.init()
+        self.fps_font = pg.font.SysFont('arial', 40)
 
     def create_objects(self):
         self.plane = Plane(self, *self.get_object_from_file("objects/Plane.obj"),
@@ -37,6 +40,11 @@ class SoftwareRender:
         self.plane.rotate_y(np.pi / 2)
         self.plane.translate(plane_start_position)
 
+    def fps_show(self):
+        self.screen.blit(self.fps_font.render(str(int(self.clock.get_fps())), True, (255, 255, 255)), (self.WIDTH - 80, 20))
+
+
+
     @staticmethod
     def get_object_from_file(filename):
         vertex, faces = [], []
@@ -51,6 +59,7 @@ class SoftwareRender:
         return vertex, faces
 
     @staticmethod
+    @njit
     def create_map(x, y, n, ratio, step):
         map_matrix = []
         for i in range(n):
@@ -78,8 +87,8 @@ class SoftwareRender:
         for coin in self.coins:
             coin.rotate_y(np.pi / 400)
             coin.draw()
+        self.fps_show()
         self.plane.draw()
-
     def run(self, _chunk, _chunk_size):
         while True:
             if self.camera.position[2] >= _chunk * _chunk_size:
@@ -96,7 +105,6 @@ class SoftwareRender:
             self.draw()
             self.camera.control()
             [exit() for i in pg.event.get() if i.type == pg.QUIT]
-            pg.display.set_caption(str(self.clock.get_fps()))
             pg.display.flip()
             self.clock.tick(self.FPS)
 
