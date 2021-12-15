@@ -1,3 +1,4 @@
 numba==0.54.1
 pygame==2.1.0
 numpy~=1.20.3
+pygame-widgets==1.0.0

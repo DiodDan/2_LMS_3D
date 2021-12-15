@@ -10,7 +10,6 @@ class SoftwareRender:
     def __init__(self):
         self.plane = None
         pg.init()
-
         self.objects = []
         self.coins = []
         self.RES = self.WIDTH, self.HEIGHT = height, width
@@ -21,11 +20,11 @@ class SoftwareRender:
         self.create_objects()
         self.camera = Camera(self, camera_start_position)
         self.projection = Projection(self)
-        #pg.font.init()
+        # pg.font.init()
         self.fps_font = pg.font.SysFont('arial', 40)
 
     def create_objects(self):
-        self.plane = Plane(self, *self.get_object_from_file('../objects/Plane.obj'),
+        self.plane = Plane(self, *self.get_object_from_file('objects/Plane.obj'),
                            color_mode=2)
         for i in range(in_time_chunks):
             self.objects.append(Object3D(self, *self.create_map(x=chunk_size_x,
@@ -35,15 +34,14 @@ class SoftwareRender:
                                                                 step=i)))
 
         self.coins.append(
-            Coin(self, *self.get_object_from_file('../objects/Coin.obj'), color_mode=3))
+            Coin(self, *self.get_object_from_file('objects/Coin.obj'), color_mode=3))
         self.coins[-1].translate([2875, 450, 2000])
         self.plane.rotate_y(np.pi / 2)
         self.plane.translate(plane_start_position)
 
     def fps_show(self):
-        self.screen.blit(self.fps_font.render(str(int(self.clock.get_fps())), True, (255, 255, 255)), (self.WIDTH - 80, 20))
-
-
+        self.screen.blit(self.fps_font.render(str(int(self.clock.get_fps())), True, (255, 255, 255)),
+                         (self.WIDTH - 80, 20))
 
     @staticmethod
     def get_object_from_file(filename):
@@ -89,6 +87,7 @@ class SoftwareRender:
             coin.draw()
         self.fps_show()
         self.plane.draw()
+
     def run(self, _chunk, _chunk_size):
         while True:
             if self.camera.position[2] >= _chunk * _chunk_size:
