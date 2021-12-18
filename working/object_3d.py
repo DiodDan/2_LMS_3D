@@ -3,7 +3,8 @@ from numba import njit
 from settings import draw_vertexes
 
 from working.matrix_functions import *
-
+import warnings
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 @njit
 def any_func(arr, a, b):
@@ -14,12 +15,13 @@ class Object3D:
     def __init__(self, render, vertexes='', faces='', color_mode=1):
         self.render = render
         self.start_pos = vertexes[0]
-        self.vertexes = np.array([np.array(v) for v in vertexes])
-        self.faces = np.array([np.array(face) for face in faces])
+        self.vertexes = np.array(vertexes)
+        self.faces = np.array(faces)
         self.translate([0.0001, 0.0001, 0.0001])
         self.color = [255, 0, 0]
         self.dir = True
         self.color_mode = color_mode
+        self.line_size = 1
 
         if self.color_mode == 2:
             self.color = [150, 150, 150]
@@ -59,7 +61,7 @@ class Object3D:
             if not any_func(polygon, self.render.H_WIDTH, self.render.H_HEIGHT):
                 """if self.color_mode == 2:
                     pg.draw.polygon(self.render.screen, (255, 255, 255), polygon)"""
-                pg.draw.polygon(self.render.screen, self.color, polygon, 1)
+                pg.draw.polygon(self.render.screen, self.color, polygon, self.line_size)
 
         if draw_vertexes:
             for vertex in vertexes:
@@ -85,9 +87,9 @@ class Object3D:
 class Plane(Object3D):
     def __init__(self, render, vertexes='', faces='', color_mode=1):
         super().__init__(render, vertexes, faces, color_mode)
-        self.start_pos = [sum(i) / len(vertexes) for i in np.array(vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
         self.max_angle = np.pi / 7
         self.real_angle = 0
+        self.line_size = 4
 
         self.movement_flag, self.draw_vertexes = True, False
         self.label = ''
@@ -102,7 +104,7 @@ class Plane(Object3D):
 
     def step_calculation(self):
         point = [sum(i) / len(self.vertexes) for i in np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
-        step = (np.array(np.array(point) - self.start_pos)).transpose()
+        step = np.array(point).transpose()
         return step
 
     def rotate_x(self, angle):

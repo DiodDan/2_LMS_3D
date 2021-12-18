@@ -22,10 +22,10 @@ class SoftwareRender:
         self.projection = Projection(self)
         # pg.font.init()
         self.fps_font = pg.font.SysFont('arial', 40)
+        self.count = 0
 
     def create_objects(self):
-        self.plane = Plane(self, *self.get_object_from_file('objects/Plane.obj'),
-                           color_mode=2)
+        self.plane = Plane(self, *self.get_object_from_file('objects/Plane_low.obj'), color_mode=2)
         for i in range(in_time_chunks):
             self.objects.append(Object3D(self, *self.create_map(x=chunk_size_x,
                                                                 y=chunk_size_y,
@@ -42,6 +42,11 @@ class SoftwareRender:
     def fps_show(self):
         self.screen.blit(self.fps_font.render(str(int(self.clock.get_fps())), True, (255, 255, 255)),
                          (self.WIDTH - 80, 20))
+    def count_show(self):
+        self.screen.blit(
+            self.fps_font.render(str(self.count), True, self.objects[0].color), (10, 0))
+        pg.draw.polygon(self.screen, self.objects[0].color, ((0, 0), (300, 0), (250, 100), (0, 100)), width=4)
+
 
     @staticmethod
     def get_object_from_file(filename):
@@ -73,6 +78,7 @@ class SoftwareRender:
 
     def draw(self):
         self.screen.fill(pg.Color('black'))
+        #self.count_show()
         self.plane.translate([0, 0, plane_moving_speed])
         if self.plane.real_angle > 0:
             self.plane.rotate_z(np.pi / (flip_speed * flip_return_ratio))
