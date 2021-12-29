@@ -114,7 +114,6 @@ class SoftwareRender:
                     self.coins[i].translate([-1000, 0, -1000])
                     self.last = i
                     self.score += 10
-                    print(self.score)
                     break
 
     def money_spavn(self, _chunk, _chunk_size):
@@ -153,3 +152,5 @@ class SoftwareRender:
 def start_me_up():
     app = SoftwareRender()
     app.run(chunk, chunk_size)
+
+
