@@ -5,7 +5,7 @@ from working.object_3d import *
 from working.projection import *
 from settings import *
 from working.ui_items import Button, Textline
-from main import start_me_up
+import main
 
 
 def change_player():
@@ -83,7 +83,7 @@ class SoftwareRender:
     def run(self, prof='None', score=0):
         self.profile = prof
         self.score = score
-        self.button = Button(self.screen, 150, 70, 100, 200, 1, start_me_up, "START")
+        self.button = Button(self.screen, 150, 70, 100, 200, 1, lambda: main.start_me_up(self.profile), "START")
         self.button1 = Button(self.screen, 280, 70, 100, 300, 1, change_player, "Change player")
         self.button2 = Button(self.screen, 215, 70, 100, 400, 1, add_player, "Add player")
         gems = pg.sprite.Group(self.button, self.button1, self.button2)
@@ -286,7 +286,6 @@ class AddPlayer:
         self.button.draw()
         self.button2.draw()
         self.text_line.draw()
-        print(flag)
         if flag == 1:
             self.screen.blit(self.error_font.render('This name is already registered', True, (200, 10, 0)),
                              (20, 330))

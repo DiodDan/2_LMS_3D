@@ -19,9 +19,10 @@ class Camera:
         self.rotation_speed = rotation_speed
         self.camera_move_on_x(cam_start_angle)
 
-    def control(self):
+    def control(self, speed):
         key = pg.key.get_pressed()
-        self.position += np.array([0, 0, 1, 1]).transpose() * follow_moving_speed
+        self.moving_speed = speed
+        self.position += np.array([0, 0, 1, 1]).transpose() * speed
         if key[pg.K_a]:
             self.position -= self.right * self.moving_speed
             self.render.plane.translate(-self.right[0:3] * self.moving_speed)

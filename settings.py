@@ -14,7 +14,7 @@ chunk_size = (chunk_rect_n - 1) * chunk_size_x  # is automatically generated
 flip_speed = 200
 flip_return_ratio = 2
 plane_start_position = [2875, 450, 350]
-plane_moving_speed = 10
+plane_moving_speed = 100
 
 # Coins
 coin_rotation_speed = 400

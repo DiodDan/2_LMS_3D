@@ -23,6 +23,7 @@ class Object3D:
         self.color_mode = color_mode
         self.line_size = 1
 
+
         if self.color_mode == 2:
             self.color = [150, 150, 150]
         if self.color_mode == 3:
@@ -101,6 +102,8 @@ class Plane(Object3D):
             self.color = [150, 150, 150]
         if self.color_mode == 3:
             self.color = [0, 204, 255]
+        if self.color_mode == 4:
+            self.color = [0, 0, 255]
 
     def step_calculation(self):
         point = [sum(i) / len(self.vertexes) for i in np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
@@ -128,4 +131,13 @@ class Plane(Object3D):
 
 
 class Coin(Plane):
-    pass
+    def __init__(self, render, vertexes='', faces='', color_mode=1):
+        super().__init__(render, vertexes, faces, color_mode)
+        self.point = [sum(i) / len(self.vertexes) for i in
+                      np.array(self.vertexes).transpose() * np.array(
+                          [1, 1, 1, 1]).reshape(1, 4).transpose()]
+    def translate(self, pos):
+        self.vertexes = self.vertexes @ translate(pos)
+        self.point = [sum(i) / len(self.vertexes) for i in
+                      np.array(self.vertexes).transpose() * np.array(
+                          [1, 1, 1, 1]).reshape(1, 4).transpose()]
