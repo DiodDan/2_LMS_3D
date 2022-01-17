@@ -4,7 +4,7 @@ from working.camera import *
 from working.object_3d import *
 from working.projection import *
 from settings import *
-import score_window
+import scorewindow
 
 
 class SoftwareRender:
@@ -41,8 +41,8 @@ class SoftwareRender:
                 'objects/Coin.obj'), color_mode=3))
             self.coins[-1].translate([random.randint(1000, 4000), 450,
                                       _chunk_size * (
-                                    _chunk + i // 4) - _chunk_size // 5 * (
-                                                  i % 4 + 1)])
+                                              _chunk + i // 4) - _chunk_size // 5 * (
+                                              i % 4 + 1)])
             self.walls.append(
                 Coin(self, *self.get_object_from_file('objects/wall.obj'),
                      color_mode=4))
@@ -52,7 +52,7 @@ class SoftwareRender:
                                                             0]) - 800] + list(
                 range(0, 4000))[int(self.coins[-1].point[0]) + 800:4000]), 450,
                                       _chunk_size * (
-                                _chunk + i // 4) - _chunk_size // 5 * (
+                                              _chunk + i // 4) - _chunk_size // 5 * (
                                               i % 4 + 1)])
 
         self.plane.rotate_y(np.pi / 2)
@@ -141,13 +141,12 @@ class SoftwareRender:
                         max_score = int(elem[1])
                         if int(self.score) > max_score:
                             cur.execute(
-                                f"""UPDATE data SET score={self.score}
-                                 WHERE name='{self.profile}'""")
+                                f"""UPDATE data SET score={self.score} WHERE name='{self.profile}'""")
                             con.commit()
                         break
 
                 con.close()
-                score_window.end_game(self.profile, self.score, start_me_up)
+                scorewindow.end_game(self.profile, self.score, start_me_up)
                 break
 
     def spawn_objects(self, _chunk, _chunk_size):
@@ -157,8 +156,8 @@ class SoftwareRender:
                      color_mode=3))
             self.coins[-1].translate([random.randint(1000, 4000), 450,
                                       _chunk_size * (
-                                                  _chunk + 1) - _chunk_size // 5 * (
-                                                  i % 4 + 1)])
+                                              _chunk + 1) - _chunk_size // 5 * (
+                                              i % 4 + 1)])
             self.walls.append(
                 Coin(self, *self.get_object_from_file('objects/wall.obj'),
                      color_mode=4))
@@ -168,8 +167,8 @@ class SoftwareRender:
                                                             0]) - 800] + list(
                 range(0, 4000))[int(self.coins[-1].point[0]) + 800:4000]), 450,
                                       _chunk_size * (
-                                                  _chunk + 1) - _chunk_size // 5 * (
-                                                  i % 4 + 1)])
+                                              _chunk + 1) - _chunk_size // 5 * (
+                                              i % 4 + 1)])
 
     def run(self, _chunk, _chunk_size):
         global plane_moving_speed

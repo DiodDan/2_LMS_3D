@@ -4,7 +4,8 @@ from working.projection import *
 from settings import *
 from working.ui_items import Button
 
-class score_window:
+
+class ScoreWindow:
     def __init__(self, start_me_up):
         pg.init()
         self.RES = self.WIDTH, self.HEIGHT = height - 50, width - 90
@@ -52,5 +53,5 @@ class score_window:
 
 
 def end_game(profile, score, start):
-    app = score_window(start)
+    app = ScoreWindow(start)
     app.run(profile, score)

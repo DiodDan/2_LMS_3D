@@ -29,5 +29,5 @@ cam_start_angle = 0.3
 # Main App
 
 FPS = 90
-height = 1600
-width = 900
+height = 1080
+width = 720

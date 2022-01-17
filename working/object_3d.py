@@ -4,7 +4,9 @@ from settings import draw_vertexes
 
 from working.matrix_functions import *
 import warnings
+
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+
 
 @njit
 def any_func(arr, a, b):
@@ -22,7 +24,6 @@ class Object3D:
         self.dir = True
         self.color_mode = color_mode
         self.line_size = 1
-
 
         if self.color_mode == 2:
             self.color = [150, 150, 150]
@@ -102,11 +103,10 @@ class Plane(Object3D):
             self.color = [150, 150, 150]
         if self.color_mode == 3:
             self.color = [0, 204, 255]
-        if self.color_mode == 4:
-            self.color = [0, 0, 255]
 
     def step_calculation(self):
-        point = [sum(i) / len(self.vertexes) for i in np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
+        point = [sum(i) / len(self.vertexes) for i in
+                 np.array(self.vertexes).transpose() * np.array([1, 1, 1, 1]).reshape(1, 4).transpose()]
         step = np.array(point).transpose()
         return step
 
@@ -129,13 +129,13 @@ class Plane(Object3D):
         self.vertexes = self.vertexes + step
 
 
-
 class Coin(Plane):
     def __init__(self, render, vertexes='', faces='', color_mode=1):
         super().__init__(render, vertexes, faces, color_mode)
         self.point = [sum(i) / len(self.vertexes) for i in
                       np.array(self.vertexes).transpose() * np.array(
                           [1, 1, 1, 1]).reshape(1, 4).transpose()]
+
     def translate(self, pos):
         self.vertexes = self.vertexes @ translate(pos)
         self.point = [sum(i) / len(self.vertexes) for i in

@@ -26,15 +26,15 @@ class Button(pygame.sprite.Sprite):
             if event.type == pg.QUIT:
                 quit()
             elif event.type == pg.MOUSEMOTION:
-                if self.point_x < event.pos[0] < self.size_x + self.point_x and self.point_y < event.pos[
-                    1] < self.size_y + self.point_y:
+                if self.point_x < event.pos[0] < self.size_x + self.point_x and self.point_y < event.pos[1] < \
+                        self.size_y + self.point_y:
                     self.is_hovered = True
                 else:
                     self.is_hovered = False
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if self.point_x < event.pos[0] < self.size_x + self.point_x and self.point_y < event.pos[
-                        1] < self.size_y + self.point_y:
+                    if self.point_x < event.pos[0] < self.size_x + self.point_x and self.point_y < event.pos[1] < \
+                            self.size_y + self.point_y:
                         self.onClick()
 
     def draw(self):
@@ -67,6 +67,9 @@ class Button(pygame.sprite.Sprite):
 
     def deleteb(self):
         self.point_x = 10000
+
+    def __repr__(self):
+        return self.text
 
 
 class Textline(pygame.sprite.Sprite):

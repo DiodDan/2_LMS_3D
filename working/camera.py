@@ -36,28 +36,6 @@ class Camera:
             if self.render.plane.max_angle >= np.abs(self.render.plane.real_angle):
                 self.render.plane.rotate_z(-np.pi / flip_speed)
                 self.render.plane.real_angle -= -np.pi / flip_speed
-        if key[pg.K_w]:
-            self.position += self.forward * self.moving_speed
-        if key[pg.K_s]:
-            self.position -= self.forward * self.moving_speed
-        if key[pg.K_q]:
-            self.position += self.up * self.moving_speed
-        if key[pg.K_e]:
-            self.position -= self.up * self.moving_speed
-
-        if key[pg.K_LEFT]:
-            self.camera_move_on_y(-self.rotation_speed)
-        if key[pg.K_RIGHT]:
-            self.camera_move_on_y(self.rotation_speed)
-        if key[pg.K_UP]:
-            self.camera_move_on_x(-self.rotation_speed)
-        if key[pg.K_DOWN]:
-            self.camera_move_on_x(self.rotation_speed)
-
-        if key[pg.K_m]:
-            self.camera_move_on_z(-self.rotation_speed)
-        if key[pg.K_n]:
-            self.camera_move_on_z(self.rotation_speed)
 
     def camera_move_on_y(self, angle):
         rotate = rotate_y(angle)
